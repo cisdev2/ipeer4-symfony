@@ -1,3 +1,8 @@
+ub_ci_peer_user:
+    resource: "@UBCiPeerUserBundle/Resources/config/routing.yml"
+    prefix:   /api
+
 NelmioApiDocBundle:
   resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
   prefix:   /api/doc
+

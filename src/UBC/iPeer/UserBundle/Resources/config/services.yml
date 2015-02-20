@@ -1,0 +1,7 @@
+parameters:
+#    ub_ci_peer_user.example.class: UBC\iPeer\UserBundle\Example
+
+services:
+#    ub_ci_peer_user.example:
+#        class: %ub_ci_peer_user.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

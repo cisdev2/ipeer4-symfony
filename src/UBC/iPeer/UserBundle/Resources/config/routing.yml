@@ -1,0 +1,4 @@
+ub_ci_peer_user_user:
+    resource: "@UBCiPeerUserBundle/Controller/UserController.php"
+    type: annotation
+

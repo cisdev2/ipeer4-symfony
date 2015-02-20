@@ -42,12 +42,12 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   %database_driver%
-        host:     %database_host%
-        port:     %database_port%
-        dbname:   %database_name%
-        user:     %database_user%
-        password: %database_password%
+        driver:   pdo_mysql
+        host:     localhost
+        port:     3306
+        dbname:   ipeer
+        user:     root
+        password: root
         charset:  UTF8
         # if using pdo_sqlite as your database driver, add the path in parameters.yml
         # e.g. database_path: %kernel.root_dir%/data/data.db3
@@ -67,6 +67,8 @@ swiftmailer:
 
 sensio_framework_extra:
     view: { annotations: false }
+    router:  { annotations: true }
+    request: { converters: true }
 
 fos_rest:
     disable_csrf_role: ROLE_API
@@ -76,13 +78,10 @@ fos_rest:
             json: ['application/json', 'application/json;version=1.0', 'application/json;version=1.1']
         view_response_listener: 'force'
         formats:
-            xml:  true
             json: true
-        templating_formats:
-            html: true
     format_listener:
         rules:
-            - { path: ^/, priorities: [ html, json, xml ], fallback_format: ~, prefer_extension: true }
+            - { path: ^/api, priorities: [ json ], fallback_format: json, prefer_extension: false }
         media_type:
             version_regex: '/(v|version)=(?P<version>[0-9\.]+)/'
     exception:
@@ -95,6 +94,11 @@ fos_rest:
     access_denied_listener:
         json: true
     body_listener: true
+    routing_loader:
+            default_format: json
+            include_format: true
+    body_converter:
+            enabled: true
 
 fos_http_cache:
     cache_control:
