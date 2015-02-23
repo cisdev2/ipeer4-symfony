@@ -75,21 +75,13 @@ class UserController extends Controller
      *
      * @ApiDoc()
      *
-     * @Route("/{id}", name="user_show")
+     * @Route("/{user}", name="user_show")
      * @Method("GET")
      */
-    public function showAction($id)
+    public function showAction(User $user)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entity = $em->getRepository('UBCiPeerUserBundle:User')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find User entity.');
-        }
-
         return array(
-            'user' => $entity,
+            'user' => $user,
         );
     }
 
@@ -130,16 +122,14 @@ class UserController extends Controller
      *
      * @ApiDoc()
      *
-     * @Route("/{id}", name="user_delete")
+     * @Route("/{user}", name="user_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, User $user)
     {
 
         $em = $this->getDoctrine()->getManager();
-        $entity = $em->getRepository('UBCiPeerUserBundle:User')->find($id);
-
-        $em->remove($entity);
+        $em->remove($user);
         $em->flush();
 
 
