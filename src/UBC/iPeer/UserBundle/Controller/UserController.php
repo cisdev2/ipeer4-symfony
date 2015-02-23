@@ -2,6 +2,7 @@
 
 namespace UBC\iPeer\UserBundle\Controller;
 
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -20,6 +21,10 @@ class UserController extends Controller
     /**
      * Lists all User entities.
      *
+     * @ApiDoc(
+     *  resource=true
+     * )
+     *
      * @Route("/", name="user")
      * @Method("GET")
      */
@@ -36,6 +41,8 @@ class UserController extends Controller
 
     /**
      * Creates a new User entity.
+     *
+     * @ApiDoc()
      *
      * @Route("/", name="user_create")
      * @Method("POST")
@@ -66,6 +73,8 @@ class UserController extends Controller
     /**
      * Finds and displays a User entity.
      *
+     * @ApiDoc()
+     *
      * @Route("/{id}", name="user_show")
      * @Method("GET")
      */
@@ -86,6 +95,8 @@ class UserController extends Controller
 
     /**
      * Edits an existing User entity.
+     *
+     * @ApiDoc()
      *
      * @Route("/{id}", name="user_update")
      * @Method("PUT")
@@ -116,6 +127,8 @@ class UserController extends Controller
     }
     /**
      * Deletes a User entity.
+     *
+     * @ApiDoc()
      *
      * @Route("/{id}", name="user_delete")
      * @Method("DELETE")
