@@ -6,9 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use UBC\iPeer\UserBundle\Entity\User;
-use UBC\iPeer\UserBundle\Form\UserType;
+use UBC\iPeer\UserBundle\Entity\User as User;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * User controller.
@@ -23,7 +22,6 @@ class UserController extends Controller
      *
      * @Route("/", name="user")
      * @Method("GET")
-     * @Template()
      */
     public function indexAction()
     {
@@ -35,6 +33,7 @@ class UserController extends Controller
             'users' => $entities,
         );
     }
+
     /**
      * Creates a new User entity.
      *
@@ -43,14 +42,24 @@ class UserController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = $this->get('jms_serializer')->deserialize($request->getContent(),'UBC\iPeer\UserBundle\Entity\User', 'json');
+        $user = $this->get('jms_serializer')->deserialize($request->getContent(),'UBC\iPeer\UserBundle\Entity\User', 'json');
+
+        if($user instanceof User === false) {
+            return new Response($user,'400');
+        }
+
+        $errors = $this->get('validator')->validate($user);
+
+        if(count($errors) > 0) {
+            return new Response((string) $errors, '400');
+        }
 
         $em = $this->getDoctrine()->getManager();
-        $em->persist($entity);
+        $em->persist($user);
         $em->flush();
 
         return array(
-            'user' => $entity,
+            'user' => $user,
         );
     }
 
@@ -59,7 +68,6 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_show")
      * @Method("GET")
-     * @Template()
      */
     public function showAction($id)
     {
@@ -81,24 +89,29 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_update")
      * @Method("PUT")
-     * @Template("UBCiPeerUserBundle:User:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        //$entity = $em->getRepository('UBCiPeerUserBundle:User')->find($id);
-        $entity = $this->get('jms_serializer')->deserialize($request->getContent(),'UBC\iPeer\UserBundle\Entity\User', 'json');
+        $user = $this->get('jms_serializer')->deserialize($request->getContent(),'UBC\iPeer\UserBundle\Entity\User', 'json');
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find User entity.');
+        if($user instanceof User === false) {
+            return new Response($user,'400');
         }
 
-        $em->persist($entity);
+        $errors = $this->get('validator')->validate($user);
+
+        if(count($errors) > 0) {
+            return new Response((string) $errors, '400');
+        }
+
+        $em->merge($user);
+
         $em->flush();
 
         return array(
-            'user'      => $entity,
+            'user'      => $user,
         );
     }
     /**
@@ -109,7 +122,6 @@ class UserController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-        $form = $this->createDeleteForm($id);
 
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository('UBCiPeerUserBundle:User')->find($id);
@@ -118,6 +130,6 @@ class UserController extends Controller
         $em->flush();
 
 
-        return $this->redirect($this->generateUrl('user'));
+        return (new Response())->setStatusCode(204);
     }
 }

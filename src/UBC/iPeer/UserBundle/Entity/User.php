@@ -3,12 +3,18 @@
 namespace UBC\iPeer\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\ReadOnly;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * User
  *
  * @ORM\Table("ipeer_user")
  * @ORM\Entity(repositoryClass="UBC\iPeer\UserBundle\Entity\UserRepository")
+ *
+ * @ExclusionPolicy("all")
  */
 class User
 {
@@ -18,27 +24,41 @@ class User
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Expose
      */
     private $id;
 
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     *
      * @ORM\Column(name="firstName", type="string", length=255)
+     *
+     * @Expose
      */
     private $firstName;
 
     /**
      * @var string
      *
+     * @Assert\NotBlank()
+     *
      * @ORM\Column(name="lastName", type="string", length=255)
+     *
+     * @Expose
      */
     private $lastName;
 
     /**
      * @var string
      *
+     * @Assert\Email()
+     *
      * @ORM\Column(name="email", type="string", length=255)
+     *
+     * @Expose
      */
     private $email;
 
