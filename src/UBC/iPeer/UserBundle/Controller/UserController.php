@@ -92,6 +92,7 @@ class UserController extends Controller
      *
      * @Route("/{id}", name="user_update")
      * @Method("PUT")
+     * @Method("POST")
      */
     public function updateAction(Request $request, $id)
     {
