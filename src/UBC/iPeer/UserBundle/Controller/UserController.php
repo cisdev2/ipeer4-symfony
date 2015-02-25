@@ -75,13 +75,13 @@ class UserController extends Controller
      *
      * @ApiDoc()
      *
-     * @Route("/{user}", name="user_show")
+     * @Route("/{id}", name="user_show")
      * @Method("GET")
      */
-    public function showAction(User $user)
+    public function showAction(User $id)
     {
         return array(
-            'user' => $user,
+            'user' => $id,
         );
     }
 
@@ -122,14 +122,14 @@ class UserController extends Controller
      *
      * @ApiDoc()
      *
-     * @Route("/{user}", name="user_delete")
+     * @Route("/{id}", name="user_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, User $user)
+    public function deleteAction(Request $request, User $id)
     {
 
         $em = $this->getDoctrine()->getManager();
-        $em->remove($user);
+        $em->remove($id);
         $em->flush();
 
 

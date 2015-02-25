@@ -71,7 +71,6 @@ sensio_framework_extra:
     request: { converters: true }
 
 fos_rest:
-    disable_csrf_role: ROLE_API
     param_fetcher_listener: true
     view:
         mime_types:

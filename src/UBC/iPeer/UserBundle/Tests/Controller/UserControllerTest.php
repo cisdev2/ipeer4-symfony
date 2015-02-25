@@ -2,54 +2,110 @@
 
 namespace UBC\iPeer\UserBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
+use Liip\FunctionalTestBundle\Test\WebTestCase;
+use UBC\iPeer\UserBundle\DataFixtures\ORM\LoadUserData;
 
 class UserControllerTest extends WebTestCase
 {
-    /*
-    public function testCompleteScenario()
-    {
-        // Create a new client to browse the application
-        $client = static::createClient();
 
-        // Create a new entry in the database
-        $crawler = $client->request('GET', '/user/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /user/");
-        $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
-
-        // Fill in the form and submit it
-        $form = $crawler->selectButton('Create')->form(array(
-            'ubc_ipeer_userbundle_user[field_name]'  => 'Test',
-            // ... other fields to fill
-        ));
-
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
-
-        // Edit the entity
-        $crawler = $client->click($crawler->selectLink('Edit')->link());
-
-        $form = $crawler->selectButton('Update')->form(array(
-            'ubc_ipeer_userbundle_user[field_name]'  => 'Foo',
-            // ... other fields to fill
-        ));
-
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
-        // Check the element contains an attribute with value equals "Foo"
-        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
-
-        // Delete the entity
-        $client->submit($crawler->selectButton('Delete')->form());
-        $crawler = $client->followRedirect();
-
-        // Check the entity has been delete on the list
-        $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
+    public function setUp(){
+        $this->client = static::createClient();
     }
 
-    */
+    protected function assertJsonResponse($response, $statusCode = 200) {
+        $this->assertEquals(
+            $statusCode, $response->getStatusCode(),
+            $response->getContent()
+        );
+        $this->assertTrue(
+            $response->headers->contains('Content-Type', 'application/json'),
+            $response->headers
+        );
+    }
+
+    public function testIndexActionEmpty() {
+        $this->loadFixtures(array());
+        $route =  $this->getUrl('user');
+        $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
+        $response = $this->client->getResponse();
+
+        $this->assertJsonResponse($response);
+
+        $this->assertCount(0, json_decode($response->getContent(), true)["users"]);
+
+    }
+
+    public function testIndexAction() {
+        $fixtures = array('UBC\iPeer\UserBundle\DataFixtures\ORM\LoadUserData');
+        $this->loadFixtures($fixtures);
+
+        $route =  $this->getUrl('user');
+        $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
+        $response = $this->client->getResponse();
+
+        $this->assertJsonResponse($response);
+
+        $this->assertCount(3, json_decode($response->getContent(), true)["users"]);
+    }
+
+    public function testCreateAction() {
+        $this->loadFixtures(array());
+
+        $route =  $this->getUrl('user');
+
+        $this->client->request('POST', $route, array('ACCEPT' => 'application/json'), array(), array(),
+            '{"first_name": "Test User", "last_name": "Action Test", "email": "testcreateaction@ipeer.ubc"}');
+        $response = $this->client->getResponse();
+        $this->assertJsonResponse($response);
+        $data = json_decode($response->getContent(), true)['user'];
+        $this->assertEquals(1, $data['id']);
+        $this->assertEquals("Test User", $data['first_name']);
+        $this->assertEquals("Action Test", $data['last_name']);
+        $this->assertEquals("testcreateaction@ipeer.ubc", $data['email']);
+
+        $this->client->request('POST', $route, array('ACCEPT' => 'application/json'), array(), array(),
+            '{"first_name": "Test2", "last_name": "ActionTwo", "email": "testcreateaction2@ipeer.ubc"}');
+        $response = $this->client->getResponse();
+        $this->assertJsonResponse($response);
+        $data = json_decode($response->getContent(), true)['user'];
+        $this->assertEquals(2, $data['id']);
+        $this->assertEquals("Test2", $data['first_name']);
+        $this->assertEquals("ActionTwo", $data['last_name']);
+        $this->assertEquals("testcreateaction2@ipeer.ubc", $data['email']);
+
+
+        $route =  $this->getUrl('user');
+        $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
+        $response = $this->client->getResponse();
+        $this->assertJsonResponse($response);
+        $this->assertCount(2, json_decode($response->getContent(), true)["users"]);
+    }
+
+    public function testShowAction() {
+        $fixtures = array('UBC\iPeer\UserBundle\DataFixtures\ORM\LoadUserData');
+        $this->loadFixtures($fixtures);
+
+
+        for($i = 1; $i <= count(LoadUserData::$users); $i++) {
+            $route =  $this->getUrl('user_show', array('id' => $i));
+            $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
+            $response = $this->client->getResponse();
+            $this->assertJsonResponse($response);
+
+            $data = json_decode($response->getContent(), true)['user'];
+            $this->assertEquals(LoadUserData::$users[$i-1]->getFirstName(), $data['first_name']);
+            $this->assertEquals(LoadUserData::$users[$i-1]->getLastName(), $data['last_name']);
+            $this->assertEquals(LoadUserData::$users[$i-1]->getEmail(), $data['email']);
+        }
+    }
+
+    public function testUpdateAction() {
+
+    }
+
+    public function testDeleteAction() {
+
+    }
+
 }

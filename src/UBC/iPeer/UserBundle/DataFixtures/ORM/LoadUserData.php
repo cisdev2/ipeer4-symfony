@@ -8,6 +8,9 @@ use UBC\iPeer\UserBundle\Entity\User;
 
 class LoadUserData implements FixtureInterface
 {
+
+    public static $users;
+
     /**
      * {@inheritDoc}
      */
@@ -18,7 +21,21 @@ class LoadUserData implements FixtureInterface
         $userAdmin->setLastName("Prime");
         $userAdmin->setEmail("admin@ipeer.ubc");
 
+        $userStudent = new User();
+        $userStudent->setFirstName("Student");
+        $userStudent->setLastName("Alpha");
+        $userStudent->setEmail("studenta@ipeer.ubc");
+
+        $userInstructor = new User();
+        $userInstructor->setFirstName("Instructor");
+        $userInstructor->setLastName("Epsilon");
+        $userInstructor->setEmail("instructor@ipeer.ubc");
+
+        self::$users = array($userAdmin, $userStudent, $userInstructor);
+
         $manager->persist($userAdmin);
+        $manager->persist($userStudent);
+        $manager->persist($userInstructor);
         $manager->flush();
     }
 }
