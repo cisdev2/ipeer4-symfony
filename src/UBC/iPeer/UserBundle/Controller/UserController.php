@@ -25,7 +25,7 @@ class UserController extends Controller
      *  resource=true
      * )
      *
-     * @Route("/", name="user")
+     * @Route("", name="user")
      * @Method("GET")
      */
     public function indexAction()
@@ -44,7 +44,7 @@ class UserController extends Controller
      *
      * @ApiDoc()
      *
-     * @Route("/", name="user_create")
+     * @Route("", name="user_create")
      * @Method("POST")
      */
     public function createAction(Request $request)
