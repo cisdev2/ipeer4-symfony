@@ -23,8 +23,9 @@ class AppKernel extends Kernel
             new Bazinga\Bundle\HateoasBundle\BazingaHateoasBundle(),
             new Hautelook\TemplatedUriBundle\HautelookTemplatedUriBundle(),
             new Bazinga\Bundle\RestExtraBundle\BazingaRestExtraBundle(),
-            new UBC\iPeer\UserBundle\UBCiPeerUserBundle(),
             new Nelmio\CorsBundle\NelmioCorsBundle(),
+            new UBC\iPeer\UserBundle\UBCiPeerUserBundle(),
+            new UBC\iPeer\CourseBundle\UBCiPeerCourseBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

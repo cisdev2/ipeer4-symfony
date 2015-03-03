@@ -30,12 +30,8 @@ class UserController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('UBCiPeerUserBundle:User')->findAll();
-
         return array(
-            'users' => $entities,
+            'users' => $this->getDoctrine()->getManager()->getRepository('UBCiPeerUserBundle:User')->findAll(),
         );
     }
 
@@ -43,6 +39,7 @@ class UserController extends Controller
      * Creates a new User entity.
      *
      * @ApiDoc()
+     *
      *
      * @Route("", name="user_create")
      * @Method("POST")
@@ -78,11 +75,9 @@ class UserController extends Controller
      * @Route("/{id}", name="user_show")
      * @Method("GET")
      */
-    public function showAction(User $id)
+    public function showAction(User $user)
     {
-        return array(
-            'user' => $id,
-        );
+        return $user;
     }
 
     /**
@@ -91,7 +86,6 @@ class UserController extends Controller
      * @ApiDoc()
      *
      * @Route("/{id}", name="user_update")
-     * @Method("PUT")
      * @Method("POST")
      */
     public function updateAction(Request $request, $id)

@@ -106,23 +106,35 @@ class UserControllerTest extends WebTestCase
 
         $route =  $this->getUrl('user_update', array('id' => 1));
         $this->client->request('POST', $route, array('ACCEPT' => 'application/json'), array(), array(),
-            '{"id": 1, "first_name": "Test User", "last_name": "Action Test", "email": "testcreateaction@ipeer.ubc"}');
+            '{"id": 1, "first_name": "Update1", "last_name": "Action Test", "email": "testcreateaction@ipeer.ubc"}');
+        $route =  $this->getUrl('user_update', array('id' => 2));
         $this->client->request('POST', $route, array('ACCEPT' => 'application/json'), array(), array(),
-            '{"id": 2, "first_name": "Test2", "last_name": "ActionTwo", "email": "testcreateaction2@ipeer.ubc"}');
+            '{"id": 2, "first_name": "Update2", "last_name": "ActionTwo", "email": "testcreateaction2@ipeer.ubc"}');
+        $route =  $this->getUrl('user_update', array('id' => 3));
         $this->client->request('POST', $route, array('ACCEPT' => 'application/json'), array(), array(),
-            '{"id": 3, "first_name": "Test3", "last_name": "ActionThree", "email": "testcreateaction3@ipeer.ubc"}');
+            '{"id": 3, "first_name": "Update3", "last_name": "ActionThree", "email": "testcreateaction3@ipeer.ubc"}');
 
         $route =  $this->getUrl('user');
         $this->client->request('GET', $route, array('ACCEPT' => 'application/json'));
         $response = $this->client->getResponse();
         $this->assertJsonResponse($response);
         $data = json_decode($response->getContent(), true)["users"];
-        $this->assertCount(3, $data);
+        $this->assertCount(3, $data); //still 3 users; new ones should not have been created
 
+        $this->assertEquals($data[0]["first_name"], "Update1");
+        $this->assertEquals($data[1]["first_name"], "Update2");
+        $this->assertEquals($data[2]["first_name"], "Update3");
 
     }
 
     public function testDeleteAction() {
+        $fixtures = array('UBC\iPeer\UserBundle\DataFixtures\ORM\LoadUserData');
+        $this->loadFixtures($fixtures);
+
+        $route =  $this->getUrl('user_delete', array('id' => 1));
+        $this->client->request('DELETE', $route, array('ACCEPT' => 'application/json'));
+        $route =  $this->getUrl('user_delete', array('id' => 2));
+        $this->client->request('DELETE', $route, array('ACCEPT' => 'application/json'));
 
     }
 

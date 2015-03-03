@@ -1,0 +1,7 @@
+parameters:
+#    ub_ci_peer_course.example.class: UBC\iPeer\CourseBundle\Example
+
+services:
+#    ub_ci_peer_course.example:
+#        class: %ub_ci_peer_course.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
