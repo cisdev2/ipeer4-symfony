@@ -16,8 +16,6 @@ class Course
     /**
      * @var integer
      *
-     * Unique id for the course
-     *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -27,32 +25,34 @@ class Course
     /**
      * @var string
      *
-     * Name of the course
-     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
 
     /**
-     * @var ArrayCollection
-     *
-     *
+     * @var ArrayCollection|Enrollment[]
      *
      * @ORM\OneToMany(targetEntity="Enrollment", mappedBy="course")
-     *
      */
     private $enrollments;
 
     /**
-     * @var
+     * @var ArrayCollection|CourseGroup[]
      *
      * @ORM\OneToMany(targetEntity="CourseGroup", mappedBy="course")
      */
     private $courseGroups;
 
     /**
-     * Get id
-     *
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->enrollments = new ArrayCollection();
+        $this->courseGroups = new ArrayCollection();
+    }
+
+    /**
      * @return integer
      */
     public function getId()
@@ -61,8 +61,6 @@ class Course
     }
 
     /**
-     * Set name
-     *
      * @param string $name
      * @return Course
      */
@@ -74,8 +72,6 @@ class Course
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -84,40 +80,26 @@ class Course
     }
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->enrollments = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add enrollments
-     *
-     * @param \UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments
+     * @param Enrollment $enrollment
      * @return Course
      */
-    public function addEnrollment(\UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments)
+    public function addEnrollment(Enrollment $enrollment)
     {
-        $this->enrollments[] = $enrollments;
+        $this->enrollments[] = $enrollment;
 
         return $this;
     }
 
     /**
-     * Remove enrollments
-     *
-     * @param \UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments
+     * @param Enrollment $enrollment
      */
-    public function removeEnrollment(\UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments)
+    public function removeEnrollment(Enrollment $enrollment)
     {
-        $this->enrollments->removeElement($enrollments);
+        $this->enrollments->removeElement($enrollment);
     }
 
     /**
-     * Get enrollments
-     *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return ArrayCollection|Enrollment[]
      */
     public function getEnrollments()
     {
@@ -125,32 +107,26 @@ class Course
     }
 
     /**
-     * Add courseGroups
-     *
-     * @param \UBC\iPeer\CourseBundle\Entity\CourseGroup $courseGroups
+     * @param CourseGroup $courseGroup
      * @return Course
      */
-    public function addCourseGroup(\UBC\iPeer\CourseBundle\Entity\CourseGroup $courseGroups)
+    public function addCourseGroup(\UBC\iPeer\CourseBundle\Entity\CourseGroup $courseGroup)
     {
-        $this->courseGroups[] = $courseGroups;
+        $this->courseGroups[] = $courseGroup;
 
         return $this;
     }
 
     /**
-     * Remove courseGroups
-     *
-     * @param \UBC\iPeer\CourseBundle\Entity\CourseGroup $courseGroups
+     * @param CourseGroup $courseGroups
      */
-    public function removeCourseGroup(\UBC\iPeer\CourseBundle\Entity\CourseGroup $courseGroups)
+    public function removeCourseGroup(CourseGroup $courseGroups)
     {
         $this->courseGroups->removeElement($courseGroups);
     }
 
     /**
-     * Get courseGroups
-     *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return ArrayCollection|CourseGroup[]
      */
     public function getCourseGroups()
     {
