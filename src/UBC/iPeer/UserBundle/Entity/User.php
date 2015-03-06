@@ -64,6 +64,13 @@ class User
 
 
     /**
+     * @var
+     *
+     * @ORM\OneToMany(targetEntity="UBC\iPeer\CourseBundle\Entity\Enrollment", mappedBy="user")
+     */
+    private $enrollments;
+
+    /**
      * Get id
      *
      * @return integer 
@@ -140,5 +147,45 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->enrollments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add enrollments
+     *
+     * @param \UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments
+     * @return User
+     */
+    public function addEnrollment(\UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments)
+    {
+        $this->enrollments[] = $enrollments;
+
+        return $this;
+    }
+
+    /**
+     * Remove enrollments
+     *
+     * @param \UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments
+     */
+    public function removeEnrollment(\UBC\iPeer\CourseBundle\Entity\Enrollment $enrollments)
+    {
+        $this->enrollments->removeElement($enrollments);
+    }
+
+    /**
+     * Get enrollments
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getEnrollments()
+    {
+        return $this->enrollments;
     }
 }
